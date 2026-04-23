@@ -1,0 +1,11 @@
+# Ignorar pastas de cache do Python 
+__pycache__/
+*.pyc
+
+# Ignorar ficheiros de dados locais para não expor CPFs no GitHub
+data/*.csv
+data/*.db
+
+# Ignorar pastas de ambientes virtuais
+venv/
+.env
