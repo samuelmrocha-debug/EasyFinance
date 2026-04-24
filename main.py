@@ -18,6 +18,8 @@ lista_documentos = carregar_dados('documentos.txt')
 valores_entradas = carregar_valores_financeiros('entradas.txt')
 valores_saidas = carregar_valores_financeiros('saidas.txt')
 lista_metas = carregar_dados('metas.txt')
+lista_lembretes = carregar_dados('lembretes.txt')
+
 def menu_principal():
     while True:
         print("\n" + "="*30)
@@ -44,7 +46,10 @@ def menu_principal():
             salvar_valores_financeiros('saidas.txt', valores_saidas)
             print("💾 Dados gravados com sucesso!")
         elif escolha == "2":
-            exibir_alertas() # Chama a página de alertas
+            # Passamos a lista de lembretes para a função
+            exibir_alertas(lista_lembretes)
+            # Salva após sair da aba
+            salvar_dados('lembretes.txt', lista_lembretes)
         elif escolha == "3":
             # Passamos: [historico], soma_entradas, soma_saidas, meses_reserva
             exibir_diagnostico([1000, 1100], sum(valores_entradas), sum(valores_saidas), 6)

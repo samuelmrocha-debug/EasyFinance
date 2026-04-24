@@ -1,4 +1,5 @@
 # src/finance_engine.py
+from datetime import datetime, timedelta
 
 # src/finance_engine.py
 
@@ -67,29 +68,53 @@ def exibir_diagnostico():
 
 # src/finance_engine.py
 
-def exibir_alertas():
+def exibir_alertas(lembretes):
     while True:
-        print("\n" + "!"*10 + " ALERTAS DE VENCIMENTO " + "!"*10)
-        print("1 - Verificar contas que vencem hoje")
-        print("2 - Configurar lembrete (Em breve)")
-        print("0 - Voltar ao Menu Principal")
-        print("!"*43)
-
-        escolha = input("Escolha uma opção: ")
+        print("\n" + "!"*10 + " GESTÃO DE VENCIMENTOS " + "!"*10)
+        print("1 - Visualizar Lembretes (Urgência)")
+        print("2 - Criar Novo Lembrete de Pagamento")
+        print("0 - Voltar")
+        
+        escolha = input("Escolha: ")
 
         if escolha == "1":
-            # Aqui simulamos a busca no banco de dados
-            print("\n[CONSULTANDO BANCO DE DADOS...]")
-            print("🔔 Alerta: Não há contas vencendo nas próximas 24h.")
-            input("\nPressione Enter para continuar...")
-            
-        elif escolha == "0":
-            print("Saindo dos Alertas...")
-            break # Sai do loop e volta para o main.py
-            
-        else:
-            print("⚠️ Opção inválida!")
+            print("\n--- STATUS DE PAGAMENTOS ---")
+            if not lembretes:
+                print("✅ Tudo em dia! Nenhum lembrete cadastrado.")
+            else:
+                hoje = datetime.now()
+                for item in lembretes:
+                    # Converte a string da data de volta para objeto datetime
+                    data_venc = datetime.strptime(item['data'], "%d/%m/%Y")
+                    dias_restantes = (data_venc - hoje).days + 1
 
+                    if dias_restantes > 10:
+                        status = "🟢 [LONGO PRAZO]"
+                    elif 3 < dias_restantes <= 10:
+                        status = "🟢 [SEM URGÊNCIA - 10 DIAS]"
+                    elif 1 < dias_restantes <= 3:
+                        status = "🟡 [ATENÇÃO - 3 DIAS]"
+                    elif 0 <= dias_restantes <= 1:
+                        status = "🔴 [ALERTA MÁXIMO - 24 HORAS]"
+                    else:
+                        status = "⚪ [VENCIDO]"
+
+                    print(f"{status} {item['conta']} | Vence em: {item['data']}")
+            input("\nPressione Enter para continuar...")
+
+        elif escolha == "2":
+            conta = input("Nome da conta/boleto: ")
+            data_str = input("Data de vencimento (DD/MM/AAAA): ")
+            try:
+                # Valida se a data está no formato correto
+                datetime.strptime(data_str, "%d/%m/%Y")
+                lembretes.append({"conta": conta, "data": data_str})
+                print(f"✅ Lembrete para '{conta}' criado!")
+            except ValueError:
+                print("⚠️ Formato de data inválido! Use DD/MM/AAAA")
+
+        elif escolha == "0":
+            break
 # src/finance_engine.py
 
 def exibir_diagnostico(historico_semanal, entradas, saidas, meses_reserva):
