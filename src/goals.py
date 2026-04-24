@@ -1,30 +1,29 @@
 # src/goals.py
 
-# src/goals.py
-
-def gerenciar_metas():
+def gerenciar_metas(metas): # Recebe a lista do main
     while True:
         print("\n" + "-"*10 + " ABA DE METAS " + "-"*10)
         print("1 - Criar Nova Meta")
         print("2 - Ver Minhas Metas")
-        print("0 - Voltar ao Menu Principal")
-        print("-"*34)
+        print("0 - Voltar")
         
-        escolha = input("Escolha uma opção: ")
+        escolha = input("Escolha: ")
 
         if escolha == "1":
-            print("\n--- CRIAR NOVA META ---")
-            nome_meta = input("Qual o seu objetivo? (ex: Viagem): ")
-            valor_meta = input("Quanto precisa poupar? R$ ")
-            print(f"✅ Meta '{nome_meta}' registada!")
+            nome = input("Qual o objetivo? ")
+            valor = input("Quanto precisa poupar? R$ ")
+            # Salvamos um dicionário com os dados dentro da lista
+            metas.append({"objetivo": nome, "valor": valor})
+            print(f"✅ Meta '{nome}' guardada!")
             
         elif escolha == "2":
             print("\n--- MINHAS METAS ---")
-            print("Ainda não tens metas guardadas.") # Futuramente lerás do arquivo
+            if not metas:
+                print("📭 Nenhuma meta guardada ainda.")
+            else:
+                for i, m in enumerate(metas, 1):
+                    print(f"{i}. {m['objetivo']} - R$ {m['valor']}")
+            input("\nPressione Enter para continuar...")
             
         elif escolha == "0":
-            print("A sair da Aba de Metas...")
-            break # Este 'break' faz o programa sair do loop e voltar para o main.py
-            
-        else:
-            print("⚠️ Opção inválida! Tenta novamente.")
+            break

@@ -2,41 +2,53 @@
 
 # src/finance_engine.py
 
-def exibir_menu_financas():
-    print("\n--- REGISTRO FINANCEIRO ---")
-    print("1 - Registrar Entrada (Salário, Vendas, etc.)")
-    print("2 - Registrar Saída (Aluguel, Contas, etc.)")
-    print("0 - Voltar")
-    
-    escolha = input("Escolha: ")
-    
-    if escolha == "1":
-        valor = float(input("Digite o valor da entrada: "))
-        descricao = input("Descrição da entrada: ")
-        print(f"✅ R$ {valor} registrado como entrada!")
-        # Futuramente, salvaremos isso em uma lista ou CSV
-        
-    elif escolha == "2":
-        valor = float(input("Digite o valor da saída: "))
-        descricao = input("Descrição da saída: ")
-        print(f"✅ R$ {valor} registrado como saída!")
+# src/finance_engine.py
 
+def exibir_menu_financas(lista_entradas, lista_saidas): # <--- Aceita as duas listas
+    while True:
+        print("\n--- REGISTRO FINANCEIRO ---")
+        print("1 - Registrar Entrada (Salário, Vendas, etc.)")
+        print("2 - Registrar Saída (Aluguel, Contas, etc.)")
+        print("0 - Voltar")
+
+        escolha = input("Escolha: ")
+
+        if escolha == "1":
+            valor = float(input("Digite o valor da entrada: "))
+            lista_entradas.append(valor) # SALVA NA LISTA
+            print(f"✅ R$ {valor} registrado como entrada!")
+
+        elif escolha == "2":
+            valor = float(input("Digite o valor da saída: "))
+            lista_saidas.append(valor) # SALVA NA LISTA
+            print(f"✅ R$ {valor} registrado como saída!")
+
+        elif escolha == "0":
+            break # Volta para o main.py
         # src/finance_engine.py
 
-def registrar_transacao():
+# No seu arquivo src/finance_engine.py
+
+def registrar_transacao(lista_entradas, lista_saidas): # <--- Adicione as listas aqui
     while True:
         print("\n" + "-"*10 + " REGISTRAR FINANÇAS " + "-"*10)
         print("1 - Adicionar Entrada (+)")
         print("2 - Adicionar Saída (-)")
         print("0 - Voltar")
-        
+
         escolha = input("Opção: ")
+        
         if escolha == "1":
-            valor = input("Valor da Entrada: R$ ")
+            # Usamos float() para transformar o texto em número decimal
+            valor = float(input("Valor da Entrada: R$ ")) 
+            lista_entradas.append(valor) # <--- ISSO SALVA O VALOR NA LISTA
             print(f"✅ Receita de R$ {valor} registrada!")
+            
         elif escolha == "2":
-            valor = input("Valor da Saída: R$ ")
+            valor = float(input("Valor da Saída: R$ "))
+            lista_saidas.append(valor) # <--- ISSO SALVA O VALOR NA LISTA
             print(f"✅ Despesa de R$ {valor} registrada!")
+            
         elif escolha == "0":
             break
 
@@ -53,14 +65,30 @@ def exibir_diagnostico():
         elif escolha == "0":
             break
 
+# src/finance_engine.py
+
 def exibir_alertas():
     while True:
         print("\n" + "!"*10 + " ALERTAS DE VENCIMENTO " + "!"*10)
-        print("1 - Ver contas que vencem hoje")
-        print("0 - Voltar")
+        print("1 - Verificar contas que vencem hoje")
+        print("2 - Configurar lembrete (Em breve)")
+        print("0 - Voltar ao Menu Principal")
+        print("!"*43)
 
-        if input("Opção: ") == "0":
-            break
+        escolha = input("Escolha uma opção: ")
+
+        if escolha == "1":
+            # Aqui simulamos a busca no banco de dados
+            print("\n[CONSULTANDO BANCO DE DADOS...]")
+            print("🔔 Alerta: Não há contas vencendo nas próximas 24h.")
+            input("\nPressione Enter para continuar...")
+            
+        elif escolha == "0":
+            print("Saindo dos Alertas...")
+            break # Sai do loop e volta para o main.py
+            
+        else:
+            print("⚠️ Opção inválida!")
 
 # src/finance_engine.py
 
