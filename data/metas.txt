@@ -1,4 +1,1 @@
-{'objetivo': 'viagem', 'valor': '10000'}
-{'objetivo': 'Casa', 'valor': '40000000'}
-{'objetivo': 'Carros ', 'valor': '100000000'}
-{'objetivo': 'Relógios', 'valor': '20.000.000'}
+

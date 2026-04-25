@@ -1,17 +1,21 @@
-# main.py
+
 import sys
 import os
 
-# Esse comando ajuda o Python a encontrar a pasta 'src' se ele se perder
+# --- CONFIGURAÇÃO DE AMBIENTE ---
+# Adiciona o diretório 'src' ao path do sistema para permitir a importação de módulos internos
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'src')))
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'src')))
 
+# --- IMPORTAÇÃO DE MÓDULOS INTERNOS ---
 from src.validators import realizar_cadastro
 from src.finance_engine import exibir_menu_financas, exibir_alertas, exibir_diagnostico, gerar_relatorio_mensal
 from src.Courses import exibir_cursos
 from src.goals import gerenciar_metas
 from src.database import salvar_dados, carregar_dados, carregar_valores_financeiros, salvar_valores_financeiros, carregar_valores_financeiros
 
-# Carregar dados existentes ao iniciar
+# --- INICIALIZAÇÃO DE DADOS (PERSISTÊNCIA) ---
+# Carrega as informações dos arquivos de texto para as listas em memória ao iniciar o programa
 lista_emails = carregar_dados('emails.txt')
 lista_senhas = carregar_dados('senhas.txt')
 lista_documentos = carregar_dados('documentos.txt')
@@ -21,6 +25,10 @@ lista_metas = carregar_dados('metas.txt')
 lista_lembretes = carregar_dados('lembretes.txt')
 
 def menu_principal():
+    """
+    Exibe o menu de funcionalidades principais após o login.
+    Controla o fluxo entre as abas de finanças, cursos, metas e relatórios.
+    """
     while True:
         print("\n" + "="*30)
         print("      EASY FINANCE - HOME")
@@ -36,32 +44,34 @@ def menu_principal():
 
         escolha = input("Escolha uma opção: ")
 
-        # No main.py
-        # No menu_principal do main.py
+        
         if escolha == "1":
+            # Gerencia entradas e saídas e sincroniza as alterações no banco de dados
             exibir_menu_financas(valores_entradas, valores_saidas)
-            
-            # ADICIONE ESTAS DUAS LINHAS AQUI:
             salvar_valores_financeiros('entradas.txt', valores_entradas)
             salvar_valores_financeiros('saidas.txt', valores_saidas)
             print("💾 Dados gravados com sucesso!")
         elif escolha == "2":
-            # Passamos a lista de lembretes para a função
+            # 1. Chama a função de alertas enviando a lista
             exibir_alertas(lista_lembretes)
-            # Salva após sair da aba
+            
+            # 2. ASSIM QUE VOLTAR DA FUNÇÃO, SALVA NO ARQUIVO:
             salvar_dados('lembretes.txt', lista_lembretes)
+            print("💾 Lembretes sincronizados com o banco de dados!")
+        
         elif escolha == "3":
-            # Passamos: [historico], soma_entradas, soma_saidas, meses_reserva
+            # Gera análise baseada no histórico e reserva de emergência
             exibir_diagnostico([1000, 1100], sum(valores_entradas), sum(valores_saidas), 6)
+        
         elif escolha == "4":
              gerar_relatorio_mensal(valores_entradas, valores_saidas) # Chama a página de relatórios
         elif escolha == "5":
            exibir_cursos() # Chama a página de cursos
-        # No menu_principal do main.py
+        
         elif escolha == "6":
             gerenciar_metas(lista_metas)
             
-            # SALVAR AS METAS NO ARQUIVO APÓS SAIR DA ABA
+            # Menu de metas pessoais com salvamento automático ao sair da aba
             salvar_dados('metas.txt', lista_metas)
             print("💾 Metas sincronizadas com o banco de dados!")
         elif escolha == "0":
@@ -71,6 +81,11 @@ def menu_principal():
             print("\nOpção inválida!")
 
 def fazer_login():
+    """
+    Realiza a autenticação do usuário.
+    Verifica se o e-mail existe e se a senha corresponde ao índice do e-mail.
+    Retorna True para sucesso e False para falha.
+    """
     print("\n==== TELA DE LOGIN ====")
     if not lista_emails:
         print("⚠️ Nenhum usuário cadastrado.")
@@ -79,6 +94,7 @@ def fazer_login():
     email_login = input("E-mail: ")
     senha_login = input("Senha: ")
 
+    # Validação de credenciais através de busca por índice
     if email_login in lista_emails:
         indice = lista_emails.index(email_login)
         if senha_login == lista_senhas[indice]:
@@ -90,7 +106,7 @@ def fazer_login():
         print("❌ Usuário não encontrado!")
     return False
 
-# --- MENU ---
+# --- LOOP PRINCIPAL DO SISTEMA ---
 while True:
     print("\n=== EASY FINANCE ===")
     print("1 - Login")
@@ -103,6 +119,7 @@ while True:
         if fazer_login():
             menu_principal()
     elif opcao == "2":
+        # Processo de cadastro: recebe dados, armazena em listas e persiste em arquivo
         e, s, d = realizar_cadastro(lista_emails, lista_documentos)
         lista_emails.append(e)
         lista_senhas.append(s)

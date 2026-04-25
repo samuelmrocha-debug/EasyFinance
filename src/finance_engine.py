@@ -5,7 +5,11 @@ from datetime import datetime, timedelta
 
 # src/finance_engine.py
 
-def exibir_menu_financas(lista_entradas, lista_saidas): # <--- Aceita as duas listas
+def exibir_menu_financas(lista_entradas, lista_saidas):
+    """
+    Interface para registro de movimentações financeiras.
+    Recebe as listas de entradas e saídas para armazenamento em memória.
+    """ # <--- Aceita as duas listas
     while True:
         print("\n--- REGISTRO FINANCEIRO ---")
         print("1 - Registrar Entrada (Salário, Vendas, etc.)")
@@ -15,6 +19,7 @@ def exibir_menu_financas(lista_entradas, lista_saidas): # <--- Aceita as duas li
         escolha = input("Escolha: ")
 
         if escolha == "1":
+            # Conversão para float permite cálculos com centavos e evita erros de tipo
             valor = float(input("Digite o valor da entrada: "))
             lista_entradas.append(valor) # SALVA NA LISTA
             print(f"✅ R$ {valor} registrado como entrada!")
@@ -30,7 +35,12 @@ def exibir_menu_financas(lista_entradas, lista_saidas): # <--- Aceita as duas li
 
 # No seu arquivo src/finance_engine.py
 
-def registrar_transacao(lista_entradas, lista_saidas): # <--- Adicione as listas aqui
+def registrar_transacao(lista_entradas, lista_saidas):
+    """
+    Gerencia a inserção de novos valores financeiros no sistema.
+    As alterações são feitas diretamente nas listas passadas por referência,
+    permitindo que o 'main.py' acesse os dados atualizados.
+    """ 
     while True:
         print("\n" + "-"*10 + " REGISTRAR FINANÇAS " + "-"*10)
         print("1 - Adicionar Entrada (+)")
@@ -40,35 +50,29 @@ def registrar_transacao(lista_entradas, lista_saidas): # <--- Adicione as listas
         escolha = input("Opção: ")
         
         if escolha == "1":
-            # Usamos float() para transformar o texto em número decimal
+            # O tratamento como float é essencial para suportar valores decimais (ex: 50.50)
             valor = float(input("Valor da Entrada: R$ ")) 
-            lista_entradas.append(valor) # <--- ISSO SALVA O VALOR NA LISTA
+            lista_entradas.append(valor) # Adiciona o novo valor ao final da lista de receitas
             print(f"✅ Receita de R$ {valor} registrada!")
             
         elif escolha == "2":
             valor = float(input("Valor da Saída: R$ "))
-            lista_saidas.append(valor) # <--- ISSO SALVA O VALOR NA LISTA
+            lista_saidas.append(valor) # Adiciona o novo valor ao final da lista de despesas
             print(f"✅ Despesa de R$ {valor} registrada!")
             
         elif escolha == "0":
+            # Retorna ao fluxo principal sem encerrar o programa
             break
 
-def exibir_diagnostico():
-    while True:
-        print("\n" + "*"*10 + " DIAGNÓSTICO FINANCEIRO " + "*"*10)
-        print("1 - Gerar Comparativo Semanal (RF007)")
-        print("0 - Voltar")
-
-        escolha = input("Opção: ")
-        if escolha == "1":
-            print("\n[Lógica de Comparação rodando...]")
-            # Aqui você usará aquela lógica de taxa % que fizemos antes
-        elif escolha == "0":
-            break
 
 # src/finance_engine.py
 
 def exibir_alertas(lembretes):
+    """
+    Gerencia o vencimento de contas.
+    Calcula a diferença entre a data atual e a data de vencimento
+    para definir o nível de urgência (Sistema de Cores/Status).
+    """
     while True:
         print("\n" + "!"*10 + " GESTÃO DE VENCIMENTOS " + "!"*10)
         print("1 - Visualizar Lembretes (Urgência)")
@@ -83,11 +87,15 @@ def exibir_alertas(lembretes):
                 print("✅ Tudo em dia! Nenhum lembrete cadastrado.")
             else:
                 hoje = datetime.now()
-                for item in lembretes:
-                    # Converte a string da data de volta para objeto datetime
-                    data_venc = datetime.strptime(item['data'], "%d/%m/%Y")
+                for item in lembretes: 
+                    nome_conta = item['conta']
+                    data_string = item['data']
+                    # Converte string (DD/MM/AAAA) para objeto datetime para permitir cálculos
+                    data_venc = datetime.strptime(data_string, "%d/%m/%Y")
+                    # Calcula a diferença em dias
                     dias_restantes = (data_venc - hoje).days + 1
 
+                    # Lógica de classificação de urgência
                     if dias_restantes > 10:
                         status = "🟢 [LONGO PRAZO]"
                     elif 3 < dias_restantes <= 10:
@@ -99,14 +107,14 @@ def exibir_alertas(lembretes):
                     else:
                         status = "⚪ [VENCIDO]"
 
-                    print(f"{status} {item['conta']} | Vence em: {item['data']}")
+                    print(f"{status} {item['conta']} | Vence em: {item['data']} (Faltam {dias_restantes} dias)")
             input("\nPressione Enter para continuar...")
 
         elif escolha == "2":
             conta = input("Nome da conta/boleto: ")
             data_str = input("Data de vencimento (DD/MM/AAAA): ")
             try:
-                # Valida se a data está no formato correto
+                # Validação de formato: impede que datas inexistentes ou formatos errados travem o programa
                 datetime.strptime(data_str, "%d/%m/%Y")
                 lembretes.append({"conta": conta, "data": data_str})
                 print(f"✅ Lembrete para '{conta}' criado!")
@@ -118,6 +126,10 @@ def exibir_alertas(lembretes):
 # src/finance_engine.py
 
 def exibir_diagnostico(historico_semanal, entradas, saidas, meses_reserva):
+    """
+    Analisa a saúde financeira comparando o desempenho entre períodos.
+    Utiliza a fórmula de variação percentual: ((V_atual - V_anterior) / V_anterior) * 100
+    """
     while True:
         print("\n" + "="*10 + " DIAGNÓSTICO FINANCEIRO (RF007) " + "="*10)
         print("1 - Gerar Diagnóstico Atual")
@@ -127,7 +139,7 @@ def exibir_diagnostico(historico_semanal, entradas, saidas, meses_reserva):
         escolha = input("Escolha uma opção: ")
 
         if escolha == "1":
-            # --- LÓGICA DE DIAGNÓSTICO ---
+            # Verificação de segurança: evita erro de divisão por zero ou dados insuficientes
             if len(historico_semanal) < 2:
                 print("\n[!] Sistema: Coletando dados para seu diagnóstico... (Precisas de pelo menos 2 semanas)")
             
@@ -141,8 +153,10 @@ def exibir_diagnostico(historico_semanal, entradas, saidas, meses_reserva):
                 if semana_anterior == 0:
                     print("\n[!] Sistema: Semana anterior sem registro, impossível comparar.")
                 else:
+                    # Cálculo da taxa de crescimento/queda
                     taxa = ((semana_atual - semana_anterior) / semana_anterior) * 100
                     
+                    # Interpretação dos resultados (Regras de Negócio)
                     if taxa > 2:
                         print(f"\n✅ RESULTADO: Taxa de +{taxa:.1f}%. Estás no caminho certo, parabéns!")
                     elif -2 <= taxa <= 2:
@@ -164,6 +178,10 @@ def exibir_diagnostico(historico_semanal, entradas, saidas, meses_reserva):
 # src/finance_engine.py
 
 def gerar_relatorio_mensal(entradas, saidas):
+    """
+    Gera um balanço simplificado somando todas as entradas e saídas.
+    Informa o saldo final e aplica alertas visuais (Emoji) conforme o resultado.
+    """
     while True:
         print("\n" + "="*10 + " RELATÓRIO MENSAL (RF008) " + "="*10)
         print("1 - Visualizar Balanço Geral")
@@ -173,7 +191,7 @@ def gerar_relatorio_mensal(entradas, saidas):
         opcao = input("Escolha uma opção: ")
 
         if opcao == "1":
-            # Calculando os totais
+            # A função sum() é utilizada para processar as listas de valores floats
             total_entradas = sum(entradas)
             total_saidas = sum(saidas)
             saldo_final = total_entradas - total_saidas

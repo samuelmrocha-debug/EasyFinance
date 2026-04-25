@@ -1,6 +1,11 @@
 # src/Courses.py
 def exibir_cursos():
+    """
+    Exibe um menu interativo com recomendações de cursos e materiais educativos.
+    O objetivo é fornecer recursos externos para a educação financeira do usuário.
+    """
     while True:
+        # Interface visual do menu de cursos
         print("\n" + "="*20 + " ACADEMIA EASY FINANCE " + "="*20)
         print("Aprenda a dominar seu dinheiro com especialistas:")
         print("1 - Organização Financeira para Iniciantes (Nath Finanças)")
@@ -10,11 +15,12 @@ def exibir_cursos():
         print("="*63)
 
         escolha = input("Escolha um tema para ver o link: ")
-
+        # Tratamento das opções do menu
         if escolha == "1":
             print("\n📚 [CURSO: ORGANIZAÇÃO BÁSICA]")
             print("Dica: Aprenda a regra dos 50-30-20.")
             print("🔗 Assistir agora: https://www.youtube.com/watch?v=zV_zE02UshE")
+            # O input vazio serve como uma 'pausa' para o usuário ler a informação antes do menu reaparecer
             input("\nPressione Enter para voltar...")
 
         elif escolha == "2":
@@ -30,6 +36,7 @@ def exibir_cursos():
             input("\nPressione Enter para voltar...")
 
         elif escolha == "0":
+            # Encerra o loop e retorna ao menu anterior
             break
         else:
             print("⚠️ Opção inválida!")

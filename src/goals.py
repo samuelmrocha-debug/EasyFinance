@@ -1,6 +1,10 @@
 # src/goals.py
 
-def gerenciar_metas(metas): # Recebe a lista do main
+def gerenciar_metas(metas):
+    """
+    Controla o sistema de metas financeiras do usuário.
+    Utiliza uma lista de dicionários para organizar o nome do objetivo e o valor alvo.
+    """
     while True:
         print("\n" + "-"*10 + " ABA DE METAS " + "-"*10)
         print("1 - Criar Nova Meta")
@@ -10,20 +14,21 @@ def gerenciar_metas(metas): # Recebe a lista do main
         escolha = input("Escolha: ")
 
         if escolha == "1":
-            nome = input("Qual o objetivo? ")
-            valor = input("Quanto precisa poupar? R$ ")
-            # Salvamos um dicionário com os dados dentro da lista
-            metas.append({"objetivo": nome, "valor": valor})
-            print(f"✅ Meta '{nome}' guardada!")
+            nome = input("Objetivo: ")
+            valor = input("Valor: ")
+            # Salvamos como uma linha de texto separada por vírgula
+            metas.append(f"{nome},{valor}") 
+            print("✅ Meta guardada!")
             
         elif escolha == "2":
             print("\n--- MINHAS METAS ---")
-            if not metas:
-                print("📭 Nenhuma meta guardada ainda.")
-            else:
-                for i, m in enumerate(metas, 1):
-                    print(f"{i}. {m['objetivo']} - R$ {m['valor']}")
+            for i, m in enumerate(metas, 1):
+                # enumerate() é usado para obter o índice (i) e o valor (m) da lista de metas, ou seja, cada meta recebe um número em sequeência. Ex: 1. Comprar um carro - R$ 20.000
+                dados = m.split(",") 
+                print(f"{i}. {dados[0]} - R$ {dados[1]}")
+            # Pausa para leitura dos dados antes de limpar a tela ou voltar ao menu        
             input("\nPressione Enter para continuar...")
             
         elif escolha == "0":
+            # Retorno ao menu principal
             break
