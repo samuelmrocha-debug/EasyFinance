@@ -1,31 +1,61 @@
-# 💰 Easy Finance - Gestor Financeiro Pessoal
+💹 Easy Finance - Controle seu Futuro
+Propósito do Projeto: > Criar uma ferramenta prática e segura para quem precisa organizar a vida financeira sem complicação. O foco foi aplicar lógica modular em Python para gerenciar gastos, prazos e metas, garantindo que os dados não se percam e fiquem protegidos.
 
-Sistema de gestão financeira desenvolvido em Python como projeto principal para a Verificação de Aprendizagem . O software foca no controle de fluxo de caixa, planejamento de metas e gestão inteligente de prazos.
+🛠️ Engenharia do Sistema (O que tem dentro)
+🛡️ Camada de Segurança (2FA): Sistema de verificação em duas etapas que gera tokens aleatórios para validar o acesso.
 
-## 🚀 Funcionalidades
+📅 Painel de Prazos: Monitoramento automático de datas. O sistema "lê" o calendário do computador e sinaliza contas críticas.
 
-* **Fluxo de Caixa:** Registro detalhado de entradas e saídas com atualização de saldo em tempo real.
-* **Alertas de Vencimento Dinâmicos:** O sistema utiliza a data atual do computador para calcular quantos dias faltam para um pagamento, categorizando o risco por cores (🟢, 🟡, 🔴).
-* **Gestão de Metas:** Cadastro de objetivos financeiros utilizando estruturas de dicionários.
-* **Persistência Robusta:** Sistema de salvamento automático em arquivos `.txt` que suporta acentuação brasileira e evita corrupção de dados.
+💰 Gestão de Fluxo: Cadastro de entradas e saídas com cálculo de saldo líquido imediato.
 
-## 🛠️ Tecnologias e Conceitos Aplicados
+📂 Banco de Dados em TXT: Persistência de dados inteligente que organiza arquivos individuais para cada usuário na pasta data/.
 
-* **Linguagem:** Python 3.14+
-* **Manipulação de Datas:** Biblioteca `datetime` para aritmética de prazos.
-* **Estruturas de Dados:** Uso intensivo de **Dicionários** e **Listas** para organização de objetos complexos.
-* **Tratamento de Exceções:** Implementação de blocos `try-except` e validações `isinstance` para evitar crashes por dados mal formatados.
-* **Encoding:** Padronização em `latin-1` com tratamento de erros de codec para compatibilidade entre sistemas operacionais.
+✅ Validador de Acesso: Filtros de segurança para garantir que e-mails e CPFs sejam digitados no formato correto.
 
-## 📁 Estrutura de Pastas
+🎯 Planejador de Metas: Módulo para registro de objetivos financeiros de curto e longo prazo.
 
-```text
-Projeto EasyFinance/
-├── main.py              # Menu principal e orquestração do sistema
-├── data/                # Banco de dados (.txt)
-└── src/                 # Módulos de lógica do sistema
-    ├── database.py      # Funções de carga e salvamento (Persistência)
-    ├── finance_engine.py # Motor de cálculos e alertas
-    ├── goals.py          # Gerenciamento de metas
-    ├── Courses.py        # Módulo de conteúdo educativo
-    └── validators.py     # Lógica de login e cadastro
+📦 Tecnologias e Bibliotecas
+Para este projeto, foquei em utilizar o poder das bibliotecas nativas do Python 3, garantindo leveza e eficiência:
+
+datetime → Crucial para a lógica de vencimentos e cálculos de dias restantes.
+
+random → Responsável pela geração dos códigos dinâmicos do 2FA.
+
+os & sys → Gerenciamento de pastas, limpeza de tela e importação dos módulos da pasta src.
+
+ast → Utilizada no carregamento de dados para interpretar listas e dicionários salvos nos arquivos.
+
+re (Regular Expressions) → Para criar as "máscaras" de validação de dados de cadastro.
+
+📂 Como o código está dividido?
+O projeto foi construído seguindo o conceito de Clean Code, separando a interface da lógica:
+
+main.py ➔ Ponto de partida e controle de fluxo inicial.
+
+src/finance_engine.py ➔ Onde os cálculos e alertas acontecem.
+
+src/database.py ➔ Toda a lógica de salvar e carregar arquivos.
+
+src/security.py ➔ Módulo exclusivo para a proteção da conta (2FA).
+
+src/interface.py ➔ Gerencia os menus e a interação com o usuário.
+
+src/validators.py ➔ Regras de negócio para login e novos cadastros.
+
+🚀 Execução
+Para rodar o gestor, utilize o comando:
+python main.py
+
+📈 Evolução (Backlog)
+[ ] Integração com SQLite para substituir os arquivos de texto.
+
+[ ] Envio automático de comprovantes por e-mail.
+
+[ ] Dashboard visual com gráficos de pizza para gastos mensais.
+
+[ ] Interface gráfica para uma melhor experiência
+
+👥 Time de Desenvolvimento
+Samuel Rocha
+
+Richard Carmo
