@@ -55,16 +55,19 @@ def carregar_dados(nome_arquivo):
                     item_convertido = ast.literal_eval(conteudo)
                     lista.append(item_convertido)
                 else:
-                    # Se for o formato texto normal (separado por vírgula)
-                    if nome_arquivo == 'metas.txt':
+                    # Caso 2: O dado está no formato CSV manual (separado por vírgula)
+                    if nome_arquivo.startswith('metas'):
                         p = conteudo.split(",")
                         lista.append({'objetivo': p[0], 'valor': p[1]})
-                    elif nome_arquivo == 'lembretes.txt':
+                    elif nome_arquivo.startswith('lembretes'):
                         p = conteudo.split(",")
                         lista.append({'conta': p[0], 'data': p[1]})
                     else:
+                        # Caso 3: Dado simples (ex: lista de emails)
                         lista.append(conteudo)
             except:
+                # Mecanismo de tolerância a falhas: se uma linha estiver corrompida,
+                # o programa ignora o erro e continua lendo as próximas.
                 continue # Se a linha estiver muito errada, ele só pula e não quebra o programa
     return lista
 
@@ -78,7 +81,7 @@ def salvar_valores_financeiros(nome_arquivo, lista_valores):
     caminho = os.path.join('data', nome_arquivo)
     with open(caminho, 'w') as f:
         for valor in lista_valores:
-            # Os valores são convertidos para string apenas para o armazenamento no arquivo
+            # Converte float para string para permitir a escrita no arquivo de texto
             f.write(f"{valor}\n")
 
 def carregar_valores_financeiros(nome_arquivo):

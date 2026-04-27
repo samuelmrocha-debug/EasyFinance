@@ -4,3 +4,5 @@ Contas do mês,30/04/2026
 Contas do mês,30/04/2026
 Comprar um carrão,31/05/2026
 Contas do mês,30/04/2026
+Fatura do cartão,27/04/2026
+Ingressos show,23/04/2026

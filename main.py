@@ -27,11 +27,16 @@ valores_saidas = carregar_valores_financeiros('saidas.txt')
 lista_metas = carregar_dados('metas.txt')
 lista_lembretes = carregar_dados('lembretes.txt')
 
-def menu_principal():
+def menu_principal(usuario_logado):
     """
     Exibe o menu de funcionalidades principais após o login.
     Controla o fluxo entre as abas de finanças, cursos, metas e relatórios.
     """
+    lista_metas = carregar_dados(f'metas_{usuario_logado}.txt')
+    lista_lembretes = carregar_dados(f'lembretes_{usuario_logado}.txt')
+    valores_entradas = carregar_valores_financeiros(f'entradas_{usuario_logado}.txt')
+    valores_saidas = carregar_valores_financeiros(f'saidas_{usuario_logado}.txt')
+
     while True:
         print("\n" + "="*30)
         print("      EASY FINANCE - HOME")
@@ -51,15 +56,15 @@ def menu_principal():
         if escolha == "1":
             # Gerencia entradas e saídas e sincroniza as alterações no banco de dados
             exibir_menu_financas(valores_entradas, valores_saidas)
-            salvar_valores_financeiros('entradas.txt', valores_entradas)
-            salvar_valores_financeiros('saidas.txt', valores_saidas)
+            salvar_valores_financeiros(f'entradas_{usuario_logado}.txt', valores_entradas)
+            salvar_valores_financeiros(f'saidas_{usuario_logado}.txt', valores_saidas)
             print("💾 Dados gravados com sucesso!")
         elif escolha == "2":
             # 1. Chama a função de alertas enviando a lista
             exibir_alertas(lista_lembretes)
             
             # 2. ASSIM QUE VOLTAR DA FUNÇÃO, SALVA NO ARQUIVO:
-            salvar_dados('lembretes.txt', lista_lembretes)
+            salvar_dados(f'lembretes_{usuario_logado}.txt', lista_lembretes)
             print("💾 Lembretes sincronizados com o banco de dados!")
         
         elif escolha == "3":
@@ -78,7 +83,7 @@ def menu_principal():
             gerenciar_metas(lista_metas)
             
             # Menu de metas pessoais com salvamento automático ao sair da aba
-            salvar_dados('metas.txt', lista_metas)
+            salvar_dados(f'metas_{usuario_logado}.txt', lista_metas)
             print("💾 Metas sincronizadas com o banco de dados!")
         elif escolha == "0":
             print("\nSessão encerrada!")
@@ -105,12 +110,12 @@ def fazer_login():
         indice = lista_emails.index(email_login)
         if senha_login == lista_senhas[indice]:
             print(f"✅ Login realizado com sucesso!")
-            return True
+            return email_login
         else:
             print("❌ Senha incorreta!")
     else:
         print("❌ Usuário não encontrado!")
-    return False
+    return None
 
 # --- LOOP PRINCIPAL DO SISTEMA ---
 while True:
@@ -122,8 +127,9 @@ while True:
     opcao = input("Escolha uma opção: ")
 
     if opcao == "1":
-        if fazer_login():
-            menu_principal()
+        usuario_logado = fazer_login()
+        if usuario_logado:
+            menu_principal(usuario_logado)
     elif opcao == "2":
         # Processo de cadastro: recebe dados, armazena em listas e persiste em arquivo
         e, s, d = realizar_cadastro(lista_emails, lista_documentos)
@@ -131,7 +137,7 @@ while True:
         lista_senhas.append(s)
         lista_documentos.append(d)
         
-        # SALVAR NO ARQUIVO AGORA
+        # SALVAR NO ARQUIVO 
         salvar_dados('emails.txt', lista_emails)
         salvar_dados('senhas.txt', lista_senhas)
         salvar_dados('documentos.txt', lista_documentos)
