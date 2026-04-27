@@ -1,7 +1,9 @@
 💹 Easy Finance - Controle seu Futuro
+
 Propósito do Projeto: > Criar uma ferramenta prática e segura para quem precisa organizar a vida financeira sem complicação. O foco foi aplicar lógica modular em Python para gerenciar gastos, prazos e metas, garantindo que os dados não se percam e fiquem protegidos.
 
-🛠️ Engenharia do Sistema (O que tem dentro)
+🛠️ Engenharia do Sistema (O que tem dentro):
+
 🛡️ Camada de Segurança (2FA): Sistema de verificação em duas etapas que gera tokens aleatórios para validar o acesso.
 
 📅 Painel de Prazos: Monitoramento automático de datas. O sistema "lê" o calendário do computador e sinaliza contas críticas.
