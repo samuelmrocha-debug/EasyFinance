@@ -13,8 +13,10 @@ def menu_principal(usuario_logado):
     lista_metas, lista_lembretes, valores_entradas, valores_saidas = carregar_sessao_usuario(usuario_logado)
 
     while True:
+        # Renderização do cabeçalho de navegação
         print("\n" + "="*30)
         print("      EASY FINANCE - HOME")
+        print(f"   Usuário: {usuario_logado}")
         print("="*30)
         print("1 - Registrar Entrada/Saída")
         print("2 - Alertas de Vencimento")
@@ -26,6 +28,8 @@ def menu_principal(usuario_logado):
         print("="*30)
 
         escolha = input("Escolha uma opção: ")
+
+        # --- ORQUESTRAÇÃO DE FUNCIONALIDADES ---
 
         if escolha == "1":
             # Gerencia entradas e saídas e sincroniza as alterações no banco de dados
@@ -49,10 +53,12 @@ def menu_principal(usuario_logado):
             exibir_diagnostico(historico_real, sum(valores_entradas), sum(valores_saidas), 6)
 
         elif escolha == "4":
+             # Módulo de visualização de balanço simplificado
              gerar_relatorio_mensal(valores_entradas, valores_saidas) # Chama a página de relatórios
              
         elif escolha == "5":
-           exibir_cursos() # Chama a página de cursos
+           #módulo de cursos e educação financeira
+           exibir_cursos() 
 
         elif escolha == "6":
             gerenciar_metas(lista_metas)

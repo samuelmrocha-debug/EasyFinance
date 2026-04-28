@@ -12,13 +12,15 @@ def verificar_2fa(email_usuario):
     print(f"Um código de segurança foi enviado para: {email_usuario}")
     
     # SIMULAÇÃO: Para fins de teste no terminal, vamos exibir o código
-    # Em produção, você removeria o print abaixo.
+   # Nas releases posteriores está linha será substituída por uma 
+    # integração com API de e-mail (como SendGrid) ou SMS (como Twilio).
     print(f"[SIMULAÇÃO DE E-MAIL] Seu código é: {codigo_gerado}")
     
     tentativas = 3
     while tentativas > 0:
         codigo_inserido = input("\nDigite o código de 6 dígitos: ")
         
+        # Validação da identidade por comparação de strings
         if codigo_inserido == codigo_gerado:
             print("✅ Identidade confirmada!")
             return True

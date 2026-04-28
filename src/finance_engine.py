@@ -15,10 +15,12 @@ def registrar_transacao(lista_entradas, lista_saidas):
 
         if escolha == "1":
             try:
+                # Conversão de tipo para float garante precisão decimal monetária
                 valor = float(input("Valor da Entrada: R$ ")) 
                 lista_entradas.append(valor)
                 print(f"✅ Receita de R$ {valor} registrada!")
             except ValueError:
+                # Tratamento de erro caso o usuário digite letras ou símbolos
                 print("⚠️ Erro: Digite um valor numérico válido.")
 
         elif escolha == "2":
@@ -49,10 +51,14 @@ def exibir_alertas(lembretes):
                 hoje = datetime.now()
                 for item in lembretes:
                     if isinstance(item, dict):
+                        # Conversão da string (DD/MM/AAAA) para objeto datetime
+                        # para permitir operações aritméticas entre datas.
                         data_venc = datetime.strptime(item['data'], "%d/%m/%Y")
                         diferenca = data_venc - hoje
+                        # Ajuste do delta de dias para considerar o dia atual
                         dias_restantes = diferenca.days + 1
-
+                        
+                        # Lógica de Classificação de Urgência (Sinalização visual)
                         if dias_restantes > 10:
                             status = "🟢 [LONGO PRAZO]"
                         elif 3 < dias_restantes <= 10:
@@ -71,6 +77,7 @@ def exibir_alertas(lembretes):
             conta = input("Nome da conta: ")
             data_str = input("Vencimento (DD/MM/AAAA): ")
             try:
+                # Validação de formato de data antes de inserir na lista
                 datetime.strptime(data_str, "%d/%m/%Y")
                 lembretes.append({'conta': conta, 'data': data_str})
                 print(f"✅ Lembrete para '{conta}' criado com sucesso!")
@@ -93,6 +100,7 @@ def exibir_diagnostico(historico_semanal, entradas, saidas, meses_reserva):
         escolha = input("Escolha uma opção: ")
 
         if escolha == "1":
+            # Requisito mínimo de 2 pontos de dados para comparação
             if len(historico_semanal) < 2:
                 print("\n[!] Sistema: Coletando dados para seu diagnóstico...")
             else:
@@ -102,6 +110,7 @@ def exibir_diagnostico(historico_semanal, entradas, saidas, meses_reserva):
                 if semana_anterior == 0:
                     print("\n[!] Sistema: Semana anterior sem registro.")
                 else:
+                    # Cálculo matemático da taxa de variação (V_final - V_inicial) / V_inicial
                     taxa = ((semana_atual - semana_anterior) / semana_anterior) * 100
                     if taxa > 2:
                         print(f"\n✅ RESULTADO: Taxa de +{taxa:.1f}%. Sucesso!")
@@ -126,12 +135,15 @@ def gerar_relatorio_mensal(entradas, saidas):
         opcao = input("Escolha uma opção: ")
 
         if opcao == "1":
+            # Utiliza a função built-in sum() para iteração eficiente sobre as listas
             total_entradas = sum(entradas)
             total_saidas = sum(saidas)
             saldo_final = total_entradas - total_saidas
 
             print(f"\nTotal Entradas: R$ {total_entradas:.2f}")
             print(f"Total Saídas:   R$ {total_saidas:.2f}")
+            
+            # Condicional de controle visual para o saldo
             if saldo_final >= 0:
                 print(f"SALDO ATUAL: R$ {saldo_final:.2f} ✅")
             else:

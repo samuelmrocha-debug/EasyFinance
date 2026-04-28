@@ -9,17 +9,21 @@ def salvar_dados(nome_arquivo, lista_itens):
     """
     Salva listas genéricas e dicionários no diretório 'data'.
     """
+    # Garante a existência do diretório 'data' para evitar FileNotFoundError
     if not os.path.exists('data'):
         os.makedirs('data')
         
     caminho = os.path.join('data', nome_arquivo)
+    # Gerenciador de contexto 'with' garante o fechamento seguro do arquivo
     with open(caminho, 'w', encoding='latin-1') as f:
         for item in lista_itens:
+            # Se o item for um dicionário, converte para formato CSV simples
             if isinstance(item, dict):
                 valores = [str(v) for v in item.values()]
                 linha = ",".join(valores)
                 f.write(linha + "\n")
             else:
+                # Caso seja um dado simples (string/int), salva diretamente
                 f.write(str(item) + "\n")
 
 def carregar_dados(nome_arquivo):
@@ -28,6 +32,8 @@ def carregar_dados(nome_arquivo):
     """
     caminho = os.path.join('data', nome_arquivo)
     lista = []
+
+    # Early return caso o arquivo ainda não tenha sido criado
     if not os.path.exists(caminho): return lista
 
     with open(caminho, 'r', encoding='latin-1', errors='ignore') as f:
@@ -36,10 +42,13 @@ def carregar_dados(nome_arquivo):
             if not conteudo: continue 
 
             try:
+                # Se a linha parecer um dicionário Python, usa ast.literal_eval
+                # por ser mais seguro que a função eval() nativa.
                 if conteudo.startswith('{'):
                     item_convertido = ast.literal_eval(conteudo)
                     lista.append(item_convertido)
                 else:
+                    # Lógica de Parsing para arquivos específicos via prefixo
                     if nome_arquivo.startswith('metas'):
                         p = conteudo.split(",")
                         lista.append({'objetivo': p[0], 'valor': p[1]})
@@ -47,6 +56,7 @@ def carregar_dados(nome_arquivo):
                         p = conteudo.split(",")
                         lista.append({'conta': p[0], 'data': p[1]})
                     else:
+                        # Fallback para strings genéricas (como emails/senhas)
                         lista.append(conteudo)
             except:
                 continue 
@@ -73,6 +83,7 @@ def carregar_valores_financeiros(nome_arquivo):
         return []
 
     with open(caminho, 'r') as f:
+        # List Comprehension para otimização da leitura e conversão de tipos
         return [float(linha.strip()) for linha in f.readlines()]
 
 def carregar_sessao_usuario(usuario_logado):

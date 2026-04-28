@@ -24,6 +24,7 @@ lista_documentos = carregar_dados('documentos.txt')
 
 # --- LOOP PRINCIPAL DO SISTEMA ---
 while True:
+    # Exibição da Interface Visual Básica
     print("\n=== EASY FINANCE ===")
     print("1 - Login")
     print("2 - Cadastro")
@@ -31,9 +32,11 @@ while True:
 
     opcao = input("Escolha uma opção: ")
 
+    # --- FLUXO DE AUTENTICAÇÃO (LOGIN) ---
     if opcao == "1":
         usuario_logado = fazer_login(lista_emails, lista_senhas)
         if usuario_logado:
+            # Camada adicional de segurança: Autenticação de Dois Fatores
             if verificar_2fa(usuario_logado):
                menu_principal(usuario_logado)
     elif opcao == "2":

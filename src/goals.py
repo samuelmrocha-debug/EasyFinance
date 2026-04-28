@@ -15,7 +15,8 @@ def gerenciar_metas(metas):
         print("0 - Voltar")
         
         escolha = input("Escolha uma opção: ")
-
+        
+        # --- FLUXO DE CRIAÇÃO ---
         if escolha == "1":
             nome = input("Objetivo: ")
             valor = input("Valor: ")
@@ -23,7 +24,8 @@ def gerenciar_metas(metas):
             # Isso mantém a integridade dos dados para a persistência em arquivo posterior.
             metas.append({'objetivo': nome, 'valor': valor})
             print("✅ Meta guardada!")
-
+        
+        # --- FLUXO DE EXIBIÇÃO ---
         elif escolha == "2":
             print("\n--- MINHAS METAS ---")
             # Validação: verifica se a lista está vazia antes de tentar iterar
@@ -43,4 +45,5 @@ def gerenciar_metas(metas):
             input("\nPressione Enter para continuar...")
 
         elif escolha == "0":
+            # Retorno de controle para o módulo chamador (menu anterior)
             break

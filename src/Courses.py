@@ -39,4 +39,5 @@ def exibir_cursos():
             # Encerra o loop e retorna ao menu anterior
             break
         else:
+            # Tratamento de erro para entradas de dados fora do esperado
             print("⚠️ Opção inválida!")
