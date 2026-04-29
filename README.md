@@ -50,7 +50,7 @@ Como o projeto utiliza apenas bibliotecas padrão, a instalação é simples:
 
 1.  **Clone este repositório:**
     ```bash
-    git clone [https://github.com/seu-usuario/easy-finance.git](https://github.com/seu-usuario/easy-finance.git)
+    git clone [https://github.com/Samuel-SI/EasyFinance.git](https://github.com/Samuel-SI/EasyFinance.git)
     ```
 2.  **Navegue até a pasta do projeto:**
     ```bash
