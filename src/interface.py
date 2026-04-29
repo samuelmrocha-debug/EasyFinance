@@ -1,4 +1,5 @@
 #src/interface.py
+import os
 from src.finance_engine import registrar_transacao, exibir_alertas, exibir_diagnostico, gerar_relatorio_mensal
 from src.Courses import exibir_cursos
 from src.goals import gerenciar_metas
@@ -71,3 +72,6 @@ def menu_principal(usuario_logado):
             break 
         else:
             print("\nOpção inválida!")
+
+def limpar_tela():
+    os.system('cls' if os.name == 'nt' else 'clear')

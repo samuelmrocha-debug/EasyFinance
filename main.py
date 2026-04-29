@@ -1,3 +1,5 @@
+#main.py
+
 import sys
 import os
 
@@ -12,7 +14,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'src')))
 # --- IMPORTAÇÃO DE MÓDULOS INTERNOS ---
 from src.auth import fazer_login
 from src.validators import realizar_cadastro
-from src.interface import menu_principal
+from src.interface import menu_principal, limpar_tela
 from src.database import salvar_dados, carregar_dados
 from src.security import verificar_2fa 
   
@@ -24,6 +26,7 @@ lista_documentos = carregar_dados('documentos.txt')
 
 # --- LOOP PRINCIPAL DO SISTEMA ---
 while True:
+    limpar_tela()  # Limpa a tela a cada iteração para melhor UX
     # Exibição da Interface Visual Básica
     print("\n=== EASY FINANCE ===")
     print("1 - Login")
