@@ -1,97 +1,108 @@
+#src/database.py
+
 import json
 import os
 import ast
 
-# Responsável por todas as operações de I/O (Input/Output), garantindo que os
-# dados sobrevivam ao fechamento do programa através de arquivos de texto (.txt).
+DB_PATH = os.path.join('data', 'database.json')
 
-def salvar_dados(nome_arquivo, lista_itens):
+def inicializar_banco():
     """
-    Salva listas genéricas e dicionários no diretório 'data'.
+    Verifica se o arquivo de banco de dados existe. Se não existir, cria um novo arquivo JSON vazio.
     """
-    # Garante a existência do diretório 'data' para evitar FileNotFoundError
-    if not os.path.exists('data'):
-        os.makedirs('data')
-        
-    caminho = os.path.join('data', nome_arquivo)
-    # Gerenciador de contexto 'with' garante o fechamento seguro do arquivo
-    with open(caminho, 'w', encoding='latin-1') as f:
-        for item in lista_itens:
-            # Se o item for um dicionário, converte para formato CSV simples
-            if isinstance(item, dict):
-                valores = [str(v) for v in item.values()]
-                linha = ",".join(valores)
-                f.write(linha + "\n")
-            else:
-                # Caso seja um dado simples (string/int), salva diretamente
-                f.write(str(item) + "\n")
+    if not os.path.exists(DB_PATH):
+        os.makedirs('data', exist_ok=True)
 
-def carregar_dados(nome_arquivo):
-    """
-    Lê os dados dos arquivos e reconstrói as estruturas (listas/dicionários).
-    """
-    caminho = os.path.join('data', nome_arquivo)
-    lista = []
+    if not os.path.exists(DB_PATH):
+        estrutura_inicial = {
+            "usuarios_cadastrados": {},
+            "repositorio_dados": {}
+        }  
+        with open(DB_PATH, 'w', encoding='utf-8') as f:
+            json.dump(estrutura_inicial, f, indent=4)
 
-    # Early return caso o arquivo ainda não tenha sido criado
-    if not os.path.exists(caminho): return lista
-
-    with open(caminho, 'r', encoding='latin-1', errors='ignore') as f:
-        for linha in f:
-            conteudo = linha.strip()
-            if not conteudo: continue 
-
-            try:
-                # Se a linha parecer um dicionário Python, usa ast.literal_eval
-                # por ser mais seguro que a função eval() nativa.
-                if conteudo.startswith('{'):
-                    item_convertido = ast.literal_eval(conteudo)
-                    lista.append(item_convertido)
-                else:
-                    # Lógica de Parsing para arquivos específicos via prefixo
-                    if nome_arquivo.startswith('metas'):
-                        p = conteudo.split(",")
-                        lista.append({'objetivo': p[0], 'valor': p[1]})
-                    elif nome_arquivo.startswith('lembretes'):
-                        p = conteudo.split(",")
-                        lista.append({'conta': p[0], 'data': p[1]})
-                    else:
-                        # Fallback para strings genéricas (como emails/senhas)
-                        lista.append(conteudo)
-            except:
-                continue 
-    return lista
-
-def salvar_valores_financeiros(nome_arquivo, lista_valores):
+def carregar_todo_o_db():
     """
-    Salva valores numéricos (entradas/saídas) em arquivos específicos na pasta 'data'.
+    Carrega o conteúdo completo do banco de dados JSON e retorna como um dicionário.
     """
-    if not os.path.exists('data'):
-        os.makedirs('data')
+    if not os.path.exists(DB_PATH):
+        inicializar_banco()
+    try:
+        with open(DB_PATH, 'r', encoding='utf-8') as f:
+            conteudo = f.read()
+            if not conteudo:
+                return {"usuarios_cadastrados": {}, "repositorio_dados": {}}
+            return json.loads(conteudo)
+    except Exception as e:
+        print(f"Erro ao carregar o banco de dados: {e}")
+        return {
+            "usuarios_cadastrados": {},"repositorio_dados": {}
+        }
+    
+def salvar_todo_o_db(dados):
+    '''grava o dicionário completo do banco de dados de volta no arquivo JSON'''
+    try:
+        with open(DB_PATH, 'w', encoding='utf-8') as f:
+            json.dump(dados, f, indent=4, ensure_ascii=False)
+            f.flush()  # Garante que os dados sejam escritos no disco imediatamente 
+            os.fsync(f.fileno())  # Sincroniza o arquivo para evitar perda de dados em caso de falha
+    except Exception as e:
+        print(f"Erro ao salvar o banco de dados: {e}")
 
-    caminho = os.path.join('data', nome_arquivo)
-    with open(caminho, 'w') as f:
-        for valor in lista_valores:
-            f.write(f"{valor}\n")
+def carregar_sessao_usuario(email_logado):
+    """
+    SEGURANÇA: Esta função filtra o JSON e entrega apenas o que pertence ao email_logado.
+    O sistema nunca 'vê' os dados de outros emails aqui.
+    """
+    db = carregar_todo_o_db()
+    repositorio = db.get("repositorio_dados", {})
 
-def carregar_valores_financeiros(nome_arquivo):
-    """
-    Lê valores do arquivo e os converte de volta para o formato numérico (float).
-    """
-    caminho = os.path.join('data', nome_arquivo)
-    if not os.path.exists(caminho):
-        return []
+    dados_user = repositorio.get(email_logado, {
+        "metas": [],
+        "lembretes": [],
+        "entradas": [],
+        "saidas": []
+    })
 
-    with open(caminho, 'r') as f:
-        # List Comprehension para otimização da leitura e conversão de tipos
-        return [float(linha.strip()) for linha in f.readlines()]
+    return (
+        list(dados_user.get("metas", [])),
+        list(dados_user.get("lembretes", [])),
+        list(dados_user.get("entradas", [])),
+        list(dados_user.get("saidas", []))
+    )
+def salvar_dados_usuario(email_logado, metas=None, lembretes=None, entradas=None, saidas=None):
+    """
+    Atualiza apenas o 'bloco' do usuário logado dentro do ficheiro global.
+    """
+    db = carregar_todo_o_db()
 
-def carregar_sessao_usuario(usuario_logado):
-    """
-    Retorna todas as listas financeiras e de metas de um usuário específico.
-    """
-    metas = carregar_dados(f'metas_{usuario_logado}.txt')
-    lembretes = carregar_dados(f'lembretes_{usuario_logado}.txt')
-    entradas = carregar_valores_financeiros(f'entradas_{usuario_logado}.txt')
-    saidas = carregar_valores_financeiros(f'saidas_{usuario_logado}.txt')
-    return metas, lembretes, entradas, saidas
+    if email_logado not in db["repositorio_dados"]:
+        db["repositorio_dados"][email_logado] = {
+            "metas": [], "lembretes": [], "entradas": [], "saidas": []
+        }
+    user_ref = db["repositorio_dados"][email_logado]
+
+    if metas is not None: user_ref["metas"] = list(metas)
+    if lembretes is not None: user_ref["lembretes"] = list(lembretes)
+    if entradas is not None: user_ref["entradas"] = list(entradas)
+    if saidas is not None: user_ref["saidas"] = list(saidas)
+
+    salvar_todo_o_db(db)
+
+def obter_listas_autenticacao():
+    """Retorna as listas de emails, senhas e documentos para o login inicial."""
+    db = carregar_todo_o_db()
+    usuarios = db.get("usuarios_cadastrados", {})
+
+    emails = list(usuarios.keys())
+    senhas = [info["senha"] for info in usuarios.values()]
+    documentos = [info["documento"] for info in usuarios.values()]
+
+    return emails, senhas, documentos
+
+def cadastrar_novo_usuario(email, senha, documento):
+    """Regista o novo usuário no ficheiro único."""
+    db = carregar_todo_o_db()
+    db["usuarios_cadastrados"][email] = {"senha": senha, "documento": documento}
+    db["repositorio_dados"][email] = {"metas": [], "lembretes": [], "entradas": [], "saidas":[]}
+    salvar_todo_o_db(db)

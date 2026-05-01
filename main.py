@@ -15,14 +15,14 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'src')))
 from src.auth import fazer_login
 from src.validators import realizar_cadastro
 from src.interface import menu_principal, limpar_tela
-from src.database import salvar_dados, carregar_dados
+from src.database import obter_listas_autenticacao, cadastrar_novo_usuario, inicializar_banco
 from src.security import verificar_2fa 
   
 # --- INICIALIZAÇÃO DE DADOS (PERSISTÊNCIA) ---
 # Carrega as informações dos arquivos de texto para as listas em memória ao iniciar o programa
-lista_emails = carregar_dados('emails.txt')
-lista_senhas = carregar_dados('senhas.txt')
-lista_documentos = carregar_dados('documentos.txt')
+inicializar_banco()
+
+lista_emails, lista_senhas, lista_documentos = obter_listas_autenticacao()
 
 # --- LOOP PRINCIPAL DO SISTEMA ---
 while True:
@@ -42,6 +42,7 @@ while True:
             # Camada adicional de segurança: Autenticação de Dois Fatores
             if verificar_2fa(usuario_logado):
                menu_principal(usuario_logado)
+    
     elif opcao == "2":
         # Processo de cadastro: recebe dados, armazena em listas e persiste em arquivo
         e, s, d = realizar_cadastro(lista_emails, lista_documentos)
@@ -49,14 +50,15 @@ while True:
         lista_senhas.append(s)
         lista_documentos.append(d)
 
-        # SALVAR NO ARQUIVO 
-        salvar_dados('emails.txt', lista_emails)
-        salvar_dados('senhas.txt', lista_senhas)
-        salvar_dados('documentos.txt', lista_documentos)
-        print("✅ Cadastro finalizado!")
+        cadastrar_novo_usuario(e, s, d)
+
+
+        print(f"✅ Cadastro de {e} realizado com sucesso!")
+        input("Pressione Enter para continuar...")
 
     elif opcao == "0":
-        print("Saindo...")
+        print("Saindo do Easy Finance... Até logo!")
         break
     else:
         print("Opção inválida!")
+        input("Pressione Enter para tentar novamente...")

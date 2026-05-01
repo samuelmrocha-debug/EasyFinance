@@ -1,6 +1,7 @@
+#src/finance_engine.py
 from datetime import datetime
 
-def registrar_transacao(lista_entradas, lista_saidas):
+def registrar_transacao(entradas, saidas):
     """
     Gerencia a inserção de novos valores financeiros no sistema.
     As alterações são feitas diretamente nas listas passadas por referência.
@@ -17,7 +18,7 @@ def registrar_transacao(lista_entradas, lista_saidas):
             try:
                 # Conversão de tipo para float garante precisão decimal monetária
                 valor = float(input("Valor da Entrada: R$ ")) 
-                lista_entradas.append(valor)
+                entradas.append(valor)
                 print(f"✅ Receita de R$ {valor} registrada!")
             except ValueError:
                 # Tratamento de erro caso o usuário digite letras ou símbolos
@@ -26,7 +27,7 @@ def registrar_transacao(lista_entradas, lista_saidas):
         elif escolha == "2":
             try:
                 valor = float(input("Valor da Saída: R$ "))
-                lista_saidas.append(valor)
+                saidas.append(valor)
                 print(f"✅ Despesa de R$ {valor} registrada!")
             except ValueError:
                 print("⚠️ Erro: Digite um valor numérico válido.")
@@ -142,7 +143,7 @@ def gerar_relatorio_mensal(entradas, saidas):
 
             print(f"\nTotal Entradas: R$ {total_entradas:.2f}")
             print(f"Total Saídas:   R$ {total_saidas:.2f}")
-            
+
             # Condicional de controle visual para o saldo
             if saldo_final >= 0:
                 print(f"SALDO ATUAL: R$ {saldo_final:.2f} ✅")

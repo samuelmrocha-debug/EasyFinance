@@ -1,4 +1,9 @@
 #src/auth.py
+import re
+
+from src.validators import validar_email
+from src.database import carregar_todo_o_db, salvar_todo_o_db
+
 def fazer_login(lista_emails, lista_senhas):
     """ realiza a autenticação do usuário e retorna o email do usuário logado ou None se falhar """
     print("\n" + "="*12 + " TELA DE LOGIN " + "="*12)
