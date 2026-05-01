@@ -1,3 +1,7 @@
+#src/goals.py
+
+from src.utils.visual import exibir_cabecalho, BOLD, GREEN, RED, YELLOW, CYAN, WHITE, RESET
+
 # Este módulo permite ao usuário definir objetivos financeiros de curto, médio
 # e longo prazo, utilizando estruturas de dicionários para organizar os dados.
 def gerenciar_metas(metas):
@@ -9,21 +13,26 @@ def gerenciar_metas(metas):
     """
     while True:
         # --- RENDERIZAÇÃO DA ABA DE METAS ---
-        print("\n" + "-"*15 + " ABA DE METAS " + "-"*15)
-        print("1 - Criar Nova Meta")
-        print("2 - Ver Minhas Metas")
-        print("0 - Voltar")
-        
-        escolha = input("Escolha uma opção: ")
-        
+        exibir_cabecalho("Academia Easy Finance - Gerenciamento de Metas")
+        print(f"\n{BOLD}1 - ➕ Criar Nova Meta {RESET}")
+        print(f"{BOLD}2 - 📋 Ver Minhas Metas{RESET}")
+        print(f"{BOLD}0 - ⬅️ Voltar{RESET}")
+
+        escolha = input(f"\n{BOLD}Escolha uma opção: {RESET}")
+
         # --- FLUXO DE CRIAÇÃO ---
         if escolha == "1":
-            nome = input("Objetivo: ")
-            valor = input("Valor: ")
+            nome = input("Qual o seu Objetivo? (ex: Comprar um carro, Fazer uma viagem): ") .strip()
+            valor = input("Valor necessário (R$): ") .replace(",", ".").strip() # Permite que o usuário use vírgula como separador decimal
+            try:
+                valor = float(valor) # Converte o valor para float para garantir que seja numérico
+            except ValueError:
+                print("❌ Valor inválido! Por favor, digite apenas números.")
+                continue
             # Os dados são encapsulados em um dicionário antes de serem inseridos na lista.
             # Isso mantém a integridade dos dados para a persistência em arquivo posterior.
             metas.append({'objetivo': nome, 'valor': valor})
-            print("✅ Meta guardada!")
+            print(f"{GREEN}✅ Meta '{nome}' guardada com sucesso!{RESET}")
         
         # --- FLUXO DE EXIBIÇÃO ---
         elif escolha == "2":

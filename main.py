@@ -1,5 +1,5 @@
 #main.py
-
+   
 import sys
 import os
 
@@ -13,10 +13,11 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'src')))
 
 # --- IMPORTAÇÃO DE MÓDULOS INTERNOS ---
 from src.auth import fazer_login
-from src.validators import realizar_cadastro
-from src.interface import menu_principal, limpar_tela
+from src.utils.validators import realizar_cadastro
+from src.interface import menu_principal
 from src.database import obter_listas_autenticacao, cadastrar_novo_usuario, inicializar_banco
-from src.security import verificar_2fa 
+from src.security import verificar_2fa
+from src.utils.visual import exibir_cabecalho, BOLD, RED, GREEN, BLUE, RESET, limpar_tela
   
 # --- INICIALIZAÇÃO DE DADOS (PERSISTÊNCIA) ---
 # Carrega as informações dos arquivos de texto para as listas em memória ao iniciar o programa
@@ -27,17 +28,16 @@ lista_emails, lista_senhas, lista_documentos = obter_listas_autenticacao()
 # --- LOOP PRINCIPAL DO SISTEMA ---
 while True:
     limpar_tela()  # Limpa a tela a cada iteração para melhor UX
-    # Exibição da Interface Visual Básica
-    print("\n=== EASY FINANCE ===")
-    print("1 - Login")
-    print("2 - Cadastro")
-    print("0 - Sair")
+    exibir_cabecalho("=== EASY FINANCE ===")
+    print(f"{GREEN}1 - Login{RESET}")
+    print(f"{BLUE}2 - Cadastro{RESET}")
+    print(f"{RED}0 - Sair{RESET}")
 
-    opcao = input("Escolha uma opção: ")
+    opcao = input(f"\n{BOLD}Escolha uma opção: {RESET}")
 
     # --- FLUXO DE AUTENTICAÇÃO (LOGIN) ---
     if opcao == "1":
-        usuario_logado = fazer_login(lista_emails, lista_senhas)
+        usuario_logado = fazer_login()
         if usuario_logado:
             # Camada adicional de segurança: Autenticação de Dois Fatores
             if verificar_2fa(usuario_logado):
@@ -57,8 +57,8 @@ while True:
         input("Pressione Enter para continuar...")
 
     elif opcao == "0":
-        print("Saindo do Easy Finance... Até logo!")
+        print(f"\n{BLUE}Obrigado por usar o Easy Finance... Até logo!{RESET}")
         break
     else:
-        print("Opção inválida!")
-        input("Pressione Enter para tentar novamente...")
+        input(f"\n{BOLD}⚠️ Opção inválida! Pressione Enter para tentar novamente...{RESET}")
+

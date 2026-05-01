@@ -1,10 +1,13 @@
 #src/interface.py
 import os
+from utils.visual import (
+    BOLD, GREEN, RED, YELLOW, BLUE, CYAN, WHITE, RESET, 
+    exibir_cabecalho, limpar_tela, formatar_moeda)
 from src.finance_engine import registrar_transacao, exibir_alertas, exibir_diagnostico, gerar_relatorio_mensal
 from src.Courses import exibir_cursos
 from src.goals import gerenciar_metas
 from src.database import carregar_sessao_usuario, salvar_dados_usuario, salvar_todo_o_db, carregar_todo_o_db
-from src.validators import validar_email
+from src.utils.validators import validar_email
 
 def configurar_perfil(usuario_logado):
     """
@@ -62,21 +65,26 @@ def menu_principal(usuario_logado):
 
     while True:
         # Renderização do cabeçalho de navegação
-        print("\n" + "="*30)
-        print("      EASY FINANCE - HOME")
-        print(f"   Usuário: {usuario_logado}")
+        exibir_cabecalho("      EASY FINANCE - HOME")
+
+        saldo = sum(valores_entradas) - sum(valores_saidas)
+        cor_saldo = GREEN if saldo >= 0 else RED
+        print(f" 👤 Logado como: {BOLD}{usuario_logado}{RESET}\n")
+        print(f" 💰 Saldo Atual: {cor_saldo}{formatar_moeda(saldo)}{RESET}")
+        print(f"{'-'*50}\n")
+
         print("="*30)
-        print("1 - Registrar Entrada/Saída")
-        print("2 - Alertas de Vencimento")
-        print("3 - Diagnóstico Financeiro")
-        print("4 - Relatórios Mensais")
-        print("5 - Aba de Cursos")
-        print("6 - Aba de Metas")
-        print("7 - Configurações de Perfil")
-        print("0 - Encerrar Sessão (Logout)")
+        print(f"{GREEN}1-{RESET}💵 Registrar Entrada/Saída")
+        print(f"{YELLOW}2-{RESET}⚠️ Alertas de Vencimento")
+        print(f"{BLUE}3-{RESET}📊 Diagnóstico Financeiro")
+        print(f"{CYAN}4-{RESET}📋 Relatórios Mensais")
+        print(f"{CYAN}5-{RESET}📚 Aba de Cursos")
+        print(f"{CYAN}6-{RESET}🎯 Aba de Metas")
+        print(f"{RED}7-{RESET}Configurações de Perfil")
+        print(f"{RED}0-{RESET}Encerrar Sessão (Logout)")
         print("="*30)
 
-        escolha = input("Escolha uma opção: ")
+        escolha = input(F"\n{BOLD}Escolha uma opção: {RESET}")
 
         # --- ORQUESTRAÇÃO DE FUNCIONALIDADES ---
 
@@ -134,6 +142,3 @@ def menu_principal(usuario_logado):
             break 
         else:
             print("\nOpção inválida!")
-
-def limpar_tela():
-    os.system('cls' if os.name == 'nt' else 'clear')

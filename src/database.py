@@ -2,7 +2,6 @@
 
 import json
 import os
-import ast
 
 DB_PATH = os.path.join('data', 'database.json')
 
@@ -19,7 +18,7 @@ def inicializar_banco():
             "repositorio_dados": {}
         }  
         with open(DB_PATH, 'w', encoding='utf-8') as f:
-            json.dump(estrutura_inicial, f, indent=4)
+            json.dump(estrutura_inicial, f, indent=4, ensure_ascii=False)
 
 def carregar_todo_o_db():
     """
@@ -29,11 +28,11 @@ def carregar_todo_o_db():
         inicializar_banco()
     try:
         with open(DB_PATH, 'r', encoding='utf-8') as f:
-            conteudo = f.read()
+            conteudo = f.read() .strip()
             if not conteudo:
                 return {"usuarios_cadastrados": {}, "repositorio_dados": {}}
             return json.loads(conteudo)
-    except Exception as e:
+    except (json.JSONDecodeError, Exception) as e:
         print(f"Erro ao carregar o banco de dados: {e}")
         return {
             "usuarios_cadastrados": {},"repositorio_dados": {}
@@ -57,19 +56,17 @@ def carregar_sessao_usuario(email_logado):
     db = carregar_todo_o_db()
     repositorio = db.get("repositorio_dados", {})
 
-    dados_user = repositorio.get(email_logado, {
-        "metas": [],
-        "lembretes": [],
-        "entradas": [],
-        "saidas": []
-    })
+    dados_user = repositorio.get(email_logado, {})
+    metas = dados_user.get("metas", [])
+    lembretes = dados_user.get("lembretes", [])
+    entradas = dados_user.get("entradas", [])
+    saidas = dados_user.get("saidas", [])
+       
 
-    return (
-        list(dados_user.get("metas", [])),
-        list(dados_user.get("lembretes", [])),
-        list(dados_user.get("entradas", [])),
-        list(dados_user.get("saidas", []))
-    )
+
+    return list(metas), list(lembretes), list(entradas), list(saidas)
+
+
 def salvar_dados_usuario(email_logado, metas=None, lembretes=None, entradas=None, saidas=None):
     """
     Atualiza apenas o 'bloco' do usuário logado dentro do ficheiro global.

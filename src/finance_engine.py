@@ -1,5 +1,9 @@
 #src/finance_engine.py
 from datetime import datetime
+from src.utils.visual import (
+    exibir_cabecalho, BOLD, GREEN, RED, RESET, 
+    formatar_moeda, YELLOW, CYAN, WHITE
+)
 
 def registrar_transacao(entradas, saidas):
     """
@@ -7,47 +11,47 @@ def registrar_transacao(entradas, saidas):
     As alterações são feitas diretamente nas listas passadas por referência.
     """ 
     while True:
-        print("\n" + "-"*10 + " REGISTRAR FINANÇAS " + "-"*10)
-        print("1 - Adicionar Entrada (+)")
-        print("2 - Adicionar Saída (-)")
-        print("0 - Voltar")
+        exibir_cabecalho("REGISTRAR FINANÇAS")
+        print(f"{GREEN}1 -{RESET} Adicionar Entrada (+)")
+        print(f"{RED}2 -{RESET} Adicionar Saída (-)")
+        print(f"{BOLD}0 -{RESET} Voltar")
 
-        escolha = input("Opção: ")
+        escolha = input(f"\n{BOLD}Opção: {RESET}")
 
         if escolha == "1":
             try:
                 # Conversão de tipo para float garante precisão decimal monetária
                 valor = float(input("Valor da Entrada: R$ ")) 
                 entradas.append(valor)
-                print(f"✅ Receita de R$ {valor} registrada!")
+                print(f"{GREEN}✅ Receita de R$ {formatar_moeda(valor)} registrada!{RESET}")
             except ValueError:
                 # Tratamento de erro caso o usuário digite letras ou símbolos
-                print("⚠️ Erro: Digite um valor numérico válido.")
+                print(f"{RED}⚠️ Erro: Digite um valor numérico válido.{RESET}")
 
         elif escolha == "2":
             try:
                 valor = float(input("Valor da Saída: R$ "))
                 saidas.append(valor)
-                print(f"✅ Despesa de R$ {valor} registrada!")
+                print(f"{RED}✅ Despesa de R$ {formatar_moeda(valor)} registrada!{RESET}")
             except ValueError:
-                print("⚠️ Erro: Digite um valor numérico válido.")
+                print(f"{RED}⚠️ Erro: Digite um valor numérico válido.{RESET}")
 
         elif escolha == "0":
             break
 
 def exibir_alertas(lembretes):
     while True:
-        print("\n" + "!"*10 + " GESTÃO DE VENCIMENTOS " + "!"*10)
-        print("1 - Visualizar Lembretes (Urgência)")
-        print("2 - Criar Novo Lembrete de Pagamento")
-        print("0 - Voltar")
+        exibir_cabecalho("GESTÃO DE VENCIMENTOS")
+        print(f"{CYAN}1 -{RESET} Visualizar Lembretes (Urgência)")
+        print(f"{CYAN}2 -{RESET} Criar Novo Lembrete de Pagamento")
+        print(f"{BOLD}0 -{RESET} Voltar")
 
-        escolha = input("Escolha: ")
+        escolha = input(f"\n{BOLD}Escolha: {RESET}")
 
         if escolha == "1":
             print("\n--- STATUS DE PAGAMENTOS ---")
             if not lembretes:
-                print("✅ Tudo em dia! Nenhum lembrete cadastrado.")
+                print(f"{GREEN}✅ Tudo em dia! Nenhum lembrete cadastrado.{RESET}")
             else:
                 hoje = datetime.now()
                 for item in lembretes:
@@ -61,18 +65,18 @@ def exibir_alertas(lembretes):
                         
                         # Lógica de Classificação de Urgência (Sinalização visual)
                         if dias_restantes > 10:
-                            status = "🟢 [LONGO PRAZO]"
+                            status = f"{GREEN}🟢 [LONGO PRAZO]{RESET}"
                         elif 3 < dias_restantes <= 10:
-                            status = f"🟢 [SEM URGÊNCIA - {dias_restantes} DIAS]"
+                            status = f"{GREEN}🟢 [SEM URGÊNCIA - {dias_restantes} DIAS]{RESET}"
                         elif 1 < dias_restantes <= 3:
-                            status = f"🟡 [ATENÇÃO - {dias_restantes} DIAS]"
+                            status = f"{YELLOW}🟡 [ATENÇÃO - {dias_restantes} DIAS]{RESET}"
                         elif 0 <= dias_restantes <= 1:
-                            status = "🔴 [ALERTA MÁXIMO - VENCE EM 24H]"
+                            status = f"{RED}🔴 [ALERTA MÁXIMO - VENCE EM 24H]{RESET}"
                         else:
-                            status = f"⚪ [VENCIDO HÁ {abs(dias_restantes)} DIAS]"
+                            status = f"{WHITE}⚪ [VENCIDO HÁ {abs(dias_restantes)} DIAS]{RESET}"
 
-                        print(f"{status} {item['conta']} | Vencimento: {item['data']}")
-            input("\nPressione Enter para continuar...")
+                        print(f"{status} {BOLD}{item['conta']}{RESET} | Vencimento: {item['data']}")
+            input("\n{BOLD}Pressione Enter para continuar...{RESET}")
 
         elif escolha == "2":
             conta = input("Nome da conta: ")
@@ -81,9 +85,10 @@ def exibir_alertas(lembretes):
                 # Validação de formato de data antes de inserir na lista
                 datetime.strptime(data_str, "%d/%m/%Y")
                 lembretes.append({'conta': conta, 'data': data_str})
-                print(f"✅ Lembrete para '{conta}' criado com sucesso!")
+                print(f"{GREEN}✅ Lembrete para '{conta}' criado com sucesso!{RESET}")
             except ValueError:
-                print("⚠️ Erro: Use o formato DD/MM/AAAA.")
+                print(f"{RED}⚠️ Erro: Use o formato DD/MM/AAAA.{RESET}")
+                input(f"\n{BOLD}Pressione Enter para continuar...{RESET}")
 
         elif escolha == "0":
             break
@@ -94,22 +99,22 @@ def exibir_diagnostico(historico_semanal, entradas, saidas, meses_reserva):
     Utiliza a fórmula de variação percentual: ((V_atual - V_anterior) / V_anterior) * 100
     """
     while True:
-        print("\n" + "="*10 + " DIAGNÓSTICO FINANCEIRO " + "="*10)
-        print("1 - Gerar Diagnóstico Atual")
-        print("0 - Voltar")
+        exibir_cabecalho("DIAGNÓSTICO FINANCEIRO")
+        print(f"{GREEN}1 -{RESET} Gerar Diagnóstico Atual")
+        print(f"{RED}0 -{RESET} Voltar")
 
-        escolha = input("Escolha uma opção: ")
+        escolha = input(f"\n{BOLD}Escolha uma opção: {RESET}")
 
         if escolha == "1":
             # Requisito mínimo de 2 pontos de dados para comparação
             if len(historico_semanal) < 2:
-                print("\n[!] Sistema: Coletando dados para seu diagnóstico...")
+                print(f"{YELLOW}[!] Sistema: Coletando dados para seu diagnóstico...{RESET}")
             else:
                 semana_atual = historico_semanal[-1]
                 semana_anterior = historico_semanal[-2]
 
                 if semana_anterior == 0:
-                    print("\n[!] Sistema: Semana anterior sem registro.")
+                    print(f"{YELLOW}[!] Sistema: Semana anterior sem registro.{RESET}")
                 else:
                     # Cálculo matemático da taxa de variação (V_final - V_inicial) / V_inicial
                     taxa = ((semana_atual - semana_anterior) / semana_anterior) * 100
@@ -129,26 +134,43 @@ def gerar_relatorio_mensal(entradas, saidas):
     Informa o saldo final e aplica alertas visuais (Emoji) conforme o resultado.
     """
     while True:
-        print("\n" + "="*10 + " RELATÓRIO MENSAL " + "="*10)
-        print("1 - Visualizar Balanço Geral")
-        print("0 - Voltar")
+        exibir_cabecalho("RELATÓRIO MENSAL")
+        print(f"{CYAN}1 -{RESET} Visualizar Balanço Geral")
+        print(f"{BOLD}0 -{RESET} Voltar")
 
-        opcao = input("Escolha uma opção: ")
+        opcao = input(f"\n{BOLD}Escolha uma opção: {RESET}")
 
         if opcao == "1":
             # Utiliza a função built-in sum() para iteração eficiente sobre as listas
+            exibir_cabecalho("EXTRATO DETALHADO")
+            print(f"{BOLD}{'-'*45}")
+            print(f"{'TIPO':<15} | {'VALOR':<25}")
+            print(f"{'-'*45}{RESET}")
+
+            # Listando as Entradas
+            for e in entradas:
+                print(f"{GREEN}{'ENTRADA':<15}{RESET} | {formatar_moeda(e):<25}")
+            
+            # Listando as Saídas
+            for s in saidas:
+                print(f"{RED}{'SAÍDA':<15}{RESET} | {formatar_moeda(s):<25}")
+
+            print(f"{BOLD}{'-'*45}{RESET}")
+
+
             total_entradas = sum(entradas)
             total_saidas = sum(saidas)
             saldo_final = total_entradas - total_saidas
 
-            print(f"\nTotal Entradas: R$ {total_entradas:.2f}")
-            print(f"Total Saídas:   R$ {total_saidas:.2f}")
+            print(f"\n{GREEN} Total Entradas: R$ {formatar_moeda(total_entradas)}")
+            print(f"{RED}Total Saídas:   R$ {formatar_moeda(total_saidas)}")
 
             # Condicional de controle visual para o saldo
-            if saldo_final >= 0:
-                print(f"SALDO ATUAL: R$ {saldo_final:.2f} ✅")
-            else:
-                print(f"SALDO ATUAL: R$ {saldo_final:.2f} 🚨")
+            cor_saldo = GREEN if saldo_final >= 0 else RED
+            emoji = "✅" if saldo_final >= 0 else "🚨"
+            
+            print(f"{CYAN}SALDO ATUAL:    {cor_saldo}{formatar_moeda(saldo_final)} {emoji}{RESET}")
+            input(f"\n{BOLD}Pressione Enter para continuar...{RESET}")
 
         elif opcao == "0":
             break
